@@ -25,6 +25,7 @@ namespace Fodun.Controllers{
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(Usuario userLogIn){
             /* Encontrar al usuario con los datos ingresados con la funcion de Services */
@@ -54,6 +55,11 @@ namespace Fodun.Controllers{
                 new ClaimsPrincipal(claimsIdentity),
                 properties
             );
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
 
             return RedirectToAction("InicioLogin", "Sedes");
         }
@@ -66,6 +72,7 @@ namespace Fodun.Controllers{
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(Usuario userRegister)
         {
@@ -101,11 +108,12 @@ namespace Fodun.Controllers{
         }
 
 
-     public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync();
-        return RedirectToAction("Login", "Account");
-    }
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+   
+        }
 
     }
 

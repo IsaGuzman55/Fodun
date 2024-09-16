@@ -7,7 +7,5 @@ namespace Fodun.Models{
         public int CapacidadTotal {get; set;}
         public string Descripcion {get; set;}
         public string Imagen {get; set;}
-
-        public ICollection<OfertaAlojamiento> sqlAlojamientos { get; set; }
     }
 }

@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ReservasContext>(options =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -29,7 +29,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.LoginPath = "/Account/Login";   // Redirección al iniciar sesión
         options.LogoutPath = "/Account/Logout"; // Redirección al cerrar sesión
-        options.AccessDeniedPath = "/Account/AccessDenied"; // Si el acceso es denegado
+        options.AccessDeniedPath = "/Account/Login"; // Si el acceso es denegado
     });
 
 builder.Services.AddAuthorization();
@@ -48,6 +48,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.Use(async (context, next) =>
+    {
+        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+        context.Response.Headers["Pragma"] = "no-cache";
+        context.Response.Headers["Expires"] = "-1";
+        await next();
+    });
 
 app.UseAuthentication();
 app.UseAuthorization();
